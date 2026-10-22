@@ -1,42 +1,69 @@
-# Daily Goals Tracker
+-- Daily Goals Tracker - real schema matching the TypeScript app model
+create extension if not exists pgcrypto;
 
-This repository is the Phase 2 scaffold for the Daily Goals Tracker project.
+create table if not exists public.profiles (
+  id text primary key,
+  locale text not null default 'fr-CA' check (locale in ('fr-CA', 'en')),
+  week_start integer not null default 1 check (week_start in (0, 1)),
+  timezone text not null default 'UTC',
+  streak_threshold integer not null default 100,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
-## Phase 2 status
+create table if not exists public.goals (
+  id text primary key,
+  title text not null,
+  category text not null,
+  icon text not null,
+  emoji text,
+  color text,
+  recurrence_type text not null default 'daily' check (recurrence_type in ('daily', 'specific_weekdays', 'one_time')),
+  weekdays integer[] null,
+  due_date date null,
+  target_value numeric null,
+  target_unit text null,
+  sort_order integer not null default 0,
+  is_active boolean not null default true,
+  deleted_at timestamptz null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  completed_today boolean not null default false
+);
 
-- Supabase dependency added for future project data integration.
-- Supabase client helper created for optional remote backend access.
-- Local fallback storage implemented with browser storage as the default backend.
-- Repository abstraction added to switch between local and Supabase sources without changing the app logic.
-- Database migration starter included for the project schema.
+create table if not exists public.goal_completions (
+  id text primary key,
+  goal_id text not null references public.goals(id) on delete cascade,
+  user_id text not null,
+  local_date date not null,
+  is_completed boolean not null default false,
+  progress_value numeric not null default 0,
+  completed_at timestamptz null,
+  timezone text not null default 'UTC',
+  source text not null default 'app' check (source in ('app', 'api')),
+  updated_at timestamptz not null default now(),
+  unique (goal_id, user_id, local_date)
+);
 
-## Local development
+create index if not exists idx_goals_active_sort on public.goals (is_active, sort_order);
+create index if not exists idx_goals_due_date on public.goals (due_date);
+create index if not exists idx_goal_completions_local_date on public.goal_completions (local_date);
 
-1. Install dependencies:
-   npm install
-2. Start the app:
-   npm run dev
-3. Run tests:
-   npm test
-4. Build the app:
-   npm run build
+alter table public.profiles enable row level security;
+alter table public.goals enable row level security;
+alter table public.goal_completions enable row level security;
 
-## Data layer design
+create policy if not exists "profiles are readable by all" on public.profiles
+for select using (true);
 
-The application supports two interchangeable backends:
+create policy if not exists "goals are readable by all" on public.goals
+for select using (true);
 
-- Local fallback: `src/data/localStore.ts`
-- Optional remote backend: `src/data/supabaseData.ts`
+create policy if not exists "goals are writable by all" on public.goals
+for all using (true) with check (true);
 
-The repository layer in `src/data/repository.ts` keeps the app logic stable regardless of which backend is active.
+create policy if not exists "goal completions are readable by all" on public.goal_completions
+for select using (true);
 
-## Supabase setup
-
-1. Create a Supabase project.
-2. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to your environment.
-3. Apply the migration in `supabase/migrations/001_initial_schema.sql`.
-4. Keep the service-role key only in server-side environment variables.
-
-## Important note
-
-This phase adds the data-layer foundation and migration scaffold. The full widget API, PWA, and daily goal logic will be implemented in subsequent phases.
+create policy if not exists "goal completions are writable by all" on public.goal_completions
+for all using (true) with check (true);
