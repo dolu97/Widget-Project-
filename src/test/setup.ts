@@ -7,7 +7,7 @@ import {
   getStreak,
   getWeekDates,
   toLocalDateKey,
-} from './dates';
+} from '../lib/dates';
 
 describe('date helpers', () => {
   it('creates a local date key', () => {
