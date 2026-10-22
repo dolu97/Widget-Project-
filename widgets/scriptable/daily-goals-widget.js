@@ -1,4 +1,8 @@
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_APP_URL=https://daily-goals.example.com
-VITE_I18N_DEFAULT_LOCALE=fr-CA
+import * as XLSX from 'xlsx';
+
+export function exportWorkbook(rows: Record<string, unknown>[]) {
+  const workbook = XLSX.utils.book_new();
+  const sheet = XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Daily Tracker');
+  XLSX.writeFile(workbook, 'daily-goals-export.xlsx');
+}

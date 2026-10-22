@@ -1,8 +1,17 @@
-import * as XLSX from 'xlsx';
+import { createClient } from '@supabase/supabase-js';
 
-export function exportWorkbook(rows: Record<string, unknown>[]) {
-  const workbook = XLSX.utils.book_new();
-  const sheet = XLSX.utils.json_to_sheet(rows);
-  XLSX.utils.book_append_sheet(workbook, sheet, 'Daily Tracker');
-  XLSX.writeFile(workbook, 'daily-goals-export.xlsx');
+export function getSupabaseClient() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    return null;
+  }
+
+  return createClient(url, anonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
 }
