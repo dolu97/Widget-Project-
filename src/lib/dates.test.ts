@@ -11,12 +11,12 @@ export function computePercent(completed: number, total: number): number | null 
 }
 
 export function getWeekStart(date: Date, weekStart: 0 | 1 = 1): Date {
-  const output = new Date(date);
-  const day = output.getDay();
+  const next = new Date(date);
+  const day = next.getDay();
   const diff = (day - weekStart + 7) % 7;
-  output.setDate(output.getDate() - diff);
-  output.setHours(0, 0, 0, 0);
-  return output;
+  next.setDate(next.getDate() - diff);
+  next.setHours(0, 0, 0, 0);
+  return next;
 }
 
 export function getWeekDates(date: Date, weekStart: 0 | 1 = 1): Date[] {
@@ -29,25 +29,28 @@ export function getWeekDates(date: Date, weekStart: 0 | 1 = 1): Date[] {
 }
 
 export function getDayKeyForTZ(date: Date, timeZone: string): string {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
+  const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-  });
+  }).formatToParts(date);
 
-  const parts = formatter.formatToParts(date);
-  const map = Object.fromEntries(parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]));
-  return `${map.year}-${map.month}-${map.day}`;
+  const values = Object.fromEntries(
+    parts.filter((part) => part.type !== 'literal').map((part) => [part.type, part.value]),
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
 }
 
 export function getStreak(days: Array<{ date: string; completed: number; total: number }>, threshold = 100): number {
   let streak = 0;
   const ordered = [...days].sort((a, b) => a.date.localeCompare(b.date));
 
-  for (let i = ordered.length - 1; i >= 0; i--) {
-    const item = ordered[i];
-    const percent = item.total === 0 ? null : Math.round((item.completed / item.total) * 100);
+  for (let index = ordered.length - 1; index >= 0; index -= 1) {
+    const item = ordered[index];
+    const percent = item.total === 0 ? null : computePercent(item.completed, item.total);
+
     if (percent === null) continue;
     if (percent >= threshold) {
       streak += 1;
@@ -69,11 +72,11 @@ export function getCurrentDateLabel(date: Date, locale = 'fr-CA'): string {
 }
 
 export function getGreeting(hour: number, locale = 'fr-CA'): string {
-  const phrases = locale.startsWith('fr')
+  const greetings = locale.startsWith('fr')
     ? ['Bonjour', 'Bon après-midi', 'Bonsoir']
     : ['Good morning', 'Good afternoon', 'Good evening'];
 
-  if (hour < 12) return phrases[0];
-  if (hour < 18) return phrases[1];
-  return phrases[2];
+  if (hour < 12) return greetings[0];
+  if (hour < 18) return greetings[1];
+  return greetings[2];
 }

@@ -1,12 +1,16 @@
 export default {
   plugins: [require('@vitejs/plugin-react')()],
   server: {
-    port: 5173,
     host: '0.0.0.0',
+    port: 5173,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 4173,
   },
   test: {
-    environment: 'jsdom',
     globals: true,
+    environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
   },
 };

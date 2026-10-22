@@ -1,5 +1,5 @@
-export default function handler(req: any, res: any) {
-  const payload = {
+export default function handler(_req, res) {
+  res.status(200).json({
     date: '2025-10-22',
     dateLabel: 'mercredi 22 octobre',
     percent: 60,
@@ -9,17 +9,9 @@ export default function handler(req: any, res: any) {
     allDone: false,
     message: 'Encore un peu !',
     goals: [
-      { id: 'goal-gym', title: 'Gym', emoji: '💪', completed: true, sortOrder: 0 },
-      { id: 'goal-reading', title: 'Reading', emoji: '📚', completed: false, sortOrder: 1 },
-      { id: 'goal-learning', title: 'Learning', emoji: '🧠', completed: true, sortOrder: 2 },
-      { id: 'goal-planning', title: 'Planning', emoji: '📝', completed: false, sortOrder: 3 },
+      { id: 'gym', title: 'Gym', emoji: '💪', completed: true, sortOrder: 0 },
+      { id: 'reading', title: 'Reading', emoji: '📚', completed: false, sortOrder: 1 },
+      { id: 'learning', title: 'Learning', emoji: '🧠', completed: true, sortOrder: 2 },
     ],
-  };
-
-  if (req.query.format === 'text') {
-    res.status(200).send(`${payload.completed}/${payload.total} — ${payload.percent}%`);
-    return;
-  }
-
-  res.status(200).json(payload);
+  });
 }

@@ -1,16 +1,32 @@
-export function getLocalMidnight(date: Date): Date {
-  const copy = new Date(date);
-  copy.setHours(0, 0, 0, 0);
-  return copy;
+export type GoalCategory = 'Health & fitness' | 'Education' | 'Finance' | 'Personal development' | 'Work' | 'Other';
+export type GoalRecurrence = 'daily' | 'specific_weekdays' | 'one_time';
+
+export interface Goal {
+  id: string;
+  title: string;
+  category: GoalCategory;
+  icon: string;
+  emoji?: string;
+  color?: string;
+  recurrenceType: GoalRecurrence;
+  weekdays?: number[];
+  dueDate?: string;
+  targetValue?: number;
+  targetUnit?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+  deletedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  completedToday?: boolean;
 }
 
-export function getNextLocalMidnight(date: Date): Date {
-  const next = new Date(date);
-  next.setDate(next.getDate() + 1);
-  next.setHours(0, 0, 0, 0);
-  return next;
-}
-
-export function isSameLocalDay(a: Date, b: Date): boolean {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+export interface DailySummary {
+  date: string;
+  completed: number;
+  total: number;
+  percent: number | null;
+  allDone: boolean;
+  remaining: number;
+  goals: Array<{ id: string; title: string; emoji?: string; completed: boolean; sortOrder: number }>;
 }

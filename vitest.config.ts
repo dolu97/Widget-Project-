@@ -1,9 +1,11 @@
-export default function handler(req: any, res: any) {
-  res.status(200).json({
-    averagePercent: 72,
-    currentStreak: 8,
-    comparison: 8,
-    totalGoalsCompleted: 53,
-    perfectDays: 12,
-  });
-}
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+  },
+});

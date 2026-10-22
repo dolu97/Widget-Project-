@@ -1,5 +1,12 @@
-export function summariseGoals(goals: Array<{ completedToday?: boolean; title: string }>): string {
-  const total = goals.length;
-  const done = goals.filter((goal) => goal.completedToday).length;
-  return `${done}/${total} completed`;
-}
+export const strings = {
+  fr: {
+    title: 'Suivi des objectifs du jour',
+    checklist: 'Liste du jour',
+    export: 'Exporter Excel',
+  },
+  en: {
+    title: 'Daily goals tracker',
+    checklist: 'Today’s checklist',
+    export: 'Export Excel',
+  },
+};

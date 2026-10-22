@@ -1,26 +1,15 @@
-export async function fetchToday(): Promise<any> {
+export async function fetchToday() {
   const response = await fetch('/api/v1/today');
+  if (!response.ok) throw new Error('Failed to fetch today');
   return response.json();
 }
 
-export async function toggleGoal(id: string): Promise<any> {
-  const response = await fetch(`/api/v1/goals/${id}/toggle`, { method: 'POST' });
+export async function toggleGoal(id: string) {
+  const response = await fetch(`/api/v1/goals/${id}/complete`, { method: 'POST' });
+  if (!response.ok) throw new Error('Failed to toggle goal');
   return response.json();
 }
 
-export async function exportCsv(): Promise<void> {
-  const data = await fetch('/api/v1/today');
-  const payload = await data.json();
-  const csv = ['date,goal,completed', ...payload.goals.map((goal: any) => `${payload.date},${goal.title},${goal.completed ? 'yes' : 'no'}`)].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = 'daily-goals.csv';
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
-
-export function formatToken(token: string): string {
-  return token.slice(0, 6) + '…';
+export function formatToken(token: string) {
+  return token.length <= 8 ? token : `${token.slice(0, 6)}…`;
 }

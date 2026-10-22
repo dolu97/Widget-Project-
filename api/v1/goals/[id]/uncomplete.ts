@@ -1,5 +1,5 @@
-export default function handler(req: any, res: any) {
-  const payload = {
+export default function handler(_req, res) {
+  res.status(200).json({
     success: true,
     summary: 'Gym ✓ — 3/5 (60 %)',
     today: {
@@ -10,12 +10,5 @@ export default function handler(req: any, res: any) {
       remaining: 2,
       allDone: false,
     },
-  };
-
-  if (req.query.format === 'text') {
-    res.status(200).send(payload.summary);
-    return;
-  }
-
-  res.status(200).json(payload);
+  });
 }

@@ -1,16 +1,8 @@
-export const strings = {
-  fr: {
-    title: 'Suivi des objectifs du jour',
-    checklist: 'Liste de tâches du jour',
-    completed: 'complété',
-    widgets: 'Widgets iPhone',
-    export: 'Exporter Excel',
-  },
-  en: {
-    title: 'Daily goals tracker',
-    checklist: 'Today’s checklist',
-    completed: 'completed',
-    widgets: 'iPhone widgets',
-    export: 'Export Excel',
-  },
-};
+import * as XLSX from 'xlsx';
+
+export function exportWorkbook(rows: Record<string, unknown>[]) {
+  const workbook = XLSX.utils.book_new();
+  const sheet = XLSX.utils.json_to_sheet(rows);
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Daily Tracker');
+  XLSX.writeFile(workbook, 'daily-goals-export.xlsx');
+}
