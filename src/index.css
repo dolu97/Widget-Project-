@@ -1,1 +1,52 @@
-import '@testing-library/jest-dom/vitest';
+:root {
+  color-scheme: dark;
+  --primary: #7c9cff;
+  --bg: #020817;
+  --card: rgba(15, 23, 42, 0.9);
+  --card-border: rgba(148, 163, 184, 0.2);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0f172a 0%, #020817 55%);
+}
+
+button, input, select {
+  font: inherit;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.32);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.shadow-soft {
+  box-shadow: 0 12px 32px rgba(124, 156, 255, 0.32);
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
